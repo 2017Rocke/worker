@@ -36,8 +36,8 @@ public class OderController {
 
     @RequestMapping(value = "/createOder",method = RequestMethod.POST,produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseBody
-    public int createOder(@RequestBody Oder oder/*, HttpServletRequest request*/){
-        String id = "3";/*(String)request.getSession().getAttribute("id");*///在登录的时候已经把id做为属性存进了session作用域
+    public int createOder(@RequestBody Oder oder, HttpServletRequest request){
+        String id =(String)request.getSession().getAttribute("id");//在登录的时候已经把id做为属性存进了session作用域
         //订单创建
         //oder01订单编号，用uuid完成  oder_code
         String oder_code = UUID.randomUUID().toString();
@@ -45,10 +45,10 @@ public class OderController {
         oder.setU_id(Integer.parseInt(id));
         oder.setStatus(1);
         //获取可用的房间的房间号 room_num
-        //Room room =oderService.findRoomNumByType(type).get(0);
-        //oder.setRoom_id(room.getRoom_num());
+        Room room =iRoomService.findRoomNumById(oder.getRoom_id()).get(0);
+        oder.setRoom_id(room.getId());
         //获取金额
-        //oder.setPrice(room.getMoney());
+        oder.setPrice(room.getMoney());
         //获取用户id
         //oder.setU_id(u_id);
         //测试TEST

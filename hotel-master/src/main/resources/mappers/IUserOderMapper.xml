@@ -1,0 +1,89 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qf.hotel.mapper.IUserOderMapper">
+    <resultMap id="userOrdersResultMap" type="Oder">
+        <id column="id" property="id"/>
+        <result column="oder_code" property="oder_code"/>
+        <result column="create_time" property="create_time"/>
+        <result column="room_start" property="room_start"/>
+        <result column="room_end" property="room_end"/>
+        <result column="price" property="price"/>
+        <result column="status" property="status"/>
+        <result column="number_of_people" property="number_of_people"/>
+        <result column="content" property="content"/>
+        <result column="u_id" property="u_id"/>
+        <result column="score" property="score"/>
+        <result column="room_id" property="room_id"/>
+        <result column="is_delete" property="is_delete"/>
+        <result column="o_description" property="o_description"/>
+        <association property="room" javaType="Room">
+            <id column="id" property="id"/>
+            <result column="room_num" property="room_num"/>
+            <result column="create_time" property="create_time"/>
+            <result column="type" property="type"/>
+            <result column="bed" property="bed"/>
+            <result column="r_description" property="r_description"/>
+            <result column="money" property="money"/>
+            <result column="is_delete" property="is_delete"/>
+            <collection property="roomImgList"
+                        ofType="RoomImg"
+                        column="room_id"
+                        select="com.qf.hotel.mapper.IRoomImgMapper.findRoomImgByRoomId"
+            />
+        </association>
+    </resultMap>
+    <sql id="defaultOderSelectSql">
+        select o.*,r.room_num,r.type,r.bed,r.r_description,r.money from oder o,room r
+    </sql>
+
+    <!--用户个人所有订单的查询-->
+    <select id="findOderByUid" resultMap="userOrdersResultMap">
+        <include refid="defaultOderSelectSql"></include>
+        where o.u_id=#{uid} and o.room_id=r.id and o.is_delete=1
+    </select>
+    <!--用户个人已取消订单的查询-->
+    <select id="findOderCancelByUid" resultMap="userOrdersResultMap">
+        <include refid="defaultOderSelectSql"></include>
+        where o.u_id=#{uid} and o.room_id=r.id and o.status=0 and o.is_delete=1
+    </select>
+    <!--用户个人已完成订单的查询-->
+    <select id="findOderCompletedByUid" resultMap="userOrdersResultMap">
+        <include refid="defaultOderSelectSql"></include>
+        where o.u_id=#{uid} and o.room_id=r.id and NOW() &gt; o.room_end and o.is_delete=1 and o.status=1
+    </select>
+    <!--用户个人正在进行订单的查询-->
+    <select id="findOderUnderwayByUid" resultMap="userOrdersResultMap">
+        <include refid="defaultOderSelectSql"></include>
+        where o.u_id=#{uid} and o.room_id=r.id and o.room_start &gt; NOW() and o.is_delete=1 and o.status=1
+    </select>
+    <!--用户个人入住订单的查询-->
+    <select id="findOderCheckInByUid" resultMap="userOrdersResultMap">
+        <include refid="defaultOderSelectSql"></include>
+        where o.u_id=#{uid} and o.room_id=r.id and NOW() &gt; o.room_start and o.room_end &gt; NOW() and o.is_delete=1 and o.status=1
+    </select>
+    <!--查询订单能否评分-->
+    <select id="examineGradeById" resultMap="userOrdersResultMap">
+        select id from oder where id=#{id} and NOW() &gt; room_end and status=1 and ( o_description is null or o_description = '' )
+    </select>
+    <!--用户取消订单-->
+    <update id="cancelOderById" >
+        UPDATE oder set status = 0 where room_start &gt; NOW() and id = #{id}
+    </update>
+    <!--用户删除个人订单-->
+    <update id="deleteOderById">
+        UPDATE oder set is_delete=0 where id=#{id} and (NOW() &gt; room_end or status=0)
+    </update>
+    <!--用户对已完成订单进行评论-->
+    <update id="gradeOderById">
+        update oder set score=#{score},o_description=#{str} where id=#{id} and status = 1
+    </update>
+
+    <!--用户查询投诉内容-->
+    <select id="findComplaintById" resultType="Complaint">
+        select * from complaint where o_id=#{id} and is_delete=1;
+    </select>
+    <insert id="addComplaintById">
+        insert into complaint(o_id,c_description) values (#{id},#{description});
+    </insert>
+</mapper>

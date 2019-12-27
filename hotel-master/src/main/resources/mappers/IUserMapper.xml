@@ -1,0 +1,52 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qf.hotel.mapper.IUserMapper">
+    <sql id="defaultUserSelectSql">
+         select * from user
+    </sql>
+    <!--查询用户所有的信息-->
+    <select id="findUserById" resultType="User">
+        <include refid="defaultUserSelectSql"></include>
+        where id=#{uid} and is_delete=1;
+    </select>
+    <select id="LoginByUser" resultType="User">
+        select * from user where username=#{user.username} and password=#{user.password} and is_delete = 1;
+    </select>
+    <select id="CheckUsername" resultType="Integer">
+        select  count(*) from user where username=#{username}
+    </select>
+    <insert id="addUser" keyProperty="user.id" useGeneratedKeys="true">
+        insert into user(username,password,phone,sex,email,addr)
+        values(#{user.username},#{user.password},#{user.phone},#{user.sex},#{user.email},#{user.addr});
+    </insert>
+    <update id="cancellationUser" keyProperty="Integer">
+        update user set is_delete = 0 where id=#{id};
+    </update>
+    <update id="updateHead_img" keyProperty="Integer">
+        update user set head_img = #{headName} where id = #{id};
+    </update>
+    <update id="updateUser">
+        update user set nickname=#{user.nickname},password=#{user.password},phone=#{user.phone},
+        sex=#{user.sex},email=#{user.email},addr=#{user.addr},head_img=#{user.head_img},
+        autograph=#{user.autograph} where id=#{user.id}
+    </update>
+    <!--修改用户的登录密码的信息-->
+    <update id="updatePassword">
+        update user set password=#{password} where id=#{id}
+    </update>
+    <!--修改用户的支付密码-->
+    <update id="updatePayPassword">
+        update user set second_pass=#{payPassword} where id=#{id}
+    </update>
+
+    <!--修改用户的信息-->
+    <update id="updateUserById">
+        update user set nickname=#{nickname},autograph=#{autograph},phone=#{phone},email=#{email},addr=#{addr} where id=#{id}
+    </update>
+
+    <!--更新用户最后登录时间-->
+    <update id="updateLastLoginTime">
+        update user set last_login_time =now() where id = #{id}
+    </update>
+</mapper>

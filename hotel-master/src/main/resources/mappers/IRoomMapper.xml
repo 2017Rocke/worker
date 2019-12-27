@@ -1,0 +1,58 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qf.hotel.mapper.IRoomMapper">
+    
+    <resultMap id="RoomAndImg" type="Room">
+        <id column="id" property="id"/>
+        <result column="room_num" property="room_num"/>
+        <result column="create_time" property="create_time"/>
+        <result column="status" property="status"/>
+        <result column="type" property="type"/>
+        <result column="bed" property="bed"/>
+        <result column="r_description" property="r_description"/>
+        <result column="money" property="money"/>
+        <result column="is_delete" property="is_delete"/>
+        <collection property="roomImgList"
+                    column="id"
+                    ofType="RoomImg"
+                    select="com.qf.hotel.mapper.IRoomImgMapper.findRoomImgByRoomId"/>
+    </resultMap>
+    <select id="selectRoomByOption" resultMap="RoomAndImg">
+        select * from room
+        <where>
+            <if test="lowPrice!=null and lowPrice!=''" >
+                and money > #{lowPrice}
+            </if>
+            <if test="highPrice != null and highPrice!= ''">
+                and money &lt; #{highPrice}
+            </if>
+            <if test="peopleNum !=null and peopleNum !=''">
+                and bed > #{peopleNum}
+            </if>
+            <if test="roomType !=null and roomType !=''">
+                and type = #{roomType}
+            </if>
+        </where>
+        limit 0,10;
+    </select>
+
+    <resultMap id="roomMap" type="Room">
+        <id property="id" column="id"/>
+        <result property="room_num" column="room_num"/>
+        <result property="create_time" column="create_time"/>
+        <result property="status" column="status"/>
+        <result property="type" column="type"/>
+        <result property="bed" column="bed"/>
+        <result property="r_description" column="r_description"/>
+        <result property="money" column="money"/>
+        <result property="is_delete" column="is_delete"/>
+    </resultMap>
+    <select id="findRoomNumByType" resultMap="roomMap">
+                select * from room where status=1 and type=#{type} and is_delete=1;
+    </select>
+    <select id="findRoomNumById" resultMap="roomMap">
+                select * from room where status=1 and id=#{id} and is_delete=1;
+    </select>
+</mapper>
