@@ -1,0 +1,115 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qf.hotel.mapper.IOderMapper">
+        <!--别名：r.id as roomid-->
+        <resultMap id="oderMap" type="Oder">
+                <id property="id" column="id"/>
+                <result property="oder_code" column="oder_code"/>
+                <result property="create_time" column="create_time"/>
+                <result property="room_start" column="room_start"/>
+                <result property="room_end" column="room_end"/>
+                <result property="price" column="price"/>
+                <result property="status" column="status"/>
+                <result property="number_of_people" column="number_of_people"/>
+                <result property="content" column="content"/>
+                <result property="u_id" column="u_id"/>
+                <result property="score" column="score"/>
+                <result property="room_id" column="room_id"/>
+                <result property="o_description" column="o_description"/>
+                <result property="is_delete" column="is_delete"/>
+                <association property="room" column="room_id" javaType="Room">
+                        <id column="roomid" property="id"/>
+                        <result column="room_num" property="room_num"/>
+                        <result column="create_time" property="create_time"/>
+                        <result column="type" property="type"/>
+                        <result column="bed" property="bed"/>
+                        <result column="r_description" property="r_description"/>
+                        <result column="money" property="money"/>
+                </association>
+                <association property="user" column="u_id" javaType="User">
+                        <id column="id" property="id"/>
+                        <result column="username" property="username"/>
+                </association>
+        </resultMap>
+        <insert id="addOder" keyProperty="oder.id" useGeneratedKeys="true">
+            insert into oder(oder_code,room_start,room_end,price,number_of_people,
+            content,u_id,room_id) value(#{oder.oder_code},#{oder.room_start},#{oder.room_end},
+            #{oder.price},#{oder.number_of_people},#{oder.content},#{oder.u_id},#{oder.room_id});
+        </insert>
+        <!--搜索user oder room三表联查 所有订单-->
+        <select id="findAllOder" resultMap="oderMap">
+                select * from oder JOIN `user` on oder.u_id=`user`.id  JOIN
+                  room on oder.room_id=room.id;
+        </select>
+        <!--搜素取消的订单0-->
+        <select id="findCancelOder" resultMap="oderMap">
+                select * from oder where status=0 and is_delete=1;
+        </select>
+        <!--修改订单信息-->
+        <!--搜素用户的订单信息-->
+        <select id="getOderClassById" resultMap="oderMap">
+                select oder.oder_code,room.room_num,oder.content,
+                user.username,oder.create_time,oder.room_start,
+                oder.room_end,oder.number_of_people,oder.price,
+                oder.status,room.type,oder.room_id from oder JOIN `user` on oder.u_id=`user`.id  JOIN  room on oder.room_id=room.id where oder.id=#{id} and oder.is_delete=1;
+        </select>
+        <!--提交用户的修改信息-->
+        <update id="changeOderClass" keyProperty="oder.id">
+                update oder set room_start=#{oder.room_start},
+                room_end=#{oder.room_end},price=#{oder.price},
+                number_of_people=#{oder.number_of_people},
+                room_id=#{oder.room_id} where id=#{oder.id}
+        </update>
+        <!--取消订单-->
+        <update id="cancelOder" keyProperty="oder.id">
+                update oder set status=0 where id=#{id}
+        </update>
+        <!--删除订单-->
+        <update id="deleteOder" keyProperty="oder.id">
+                update oder set is_delete=0 where id=#{id}
+        </update>
+
+
+
+        <!--搜索所有订单个数01-->
+        <select id="findTotalCount01" resultType="Integer">
+                select count(*) from oder where is_delete = 1
+        </select>
+        <!--user oder room三表联查 所有订单且为当前展示的订单-->
+        <select id="findList01" resultMap="oderMap">
+                select oder.id,oder.oder_code,room.room_num,room.type,user.username,oder.create_time,oder.room_start,oder.room_end,oder.number_of_people,oder.price,oder.status from oder JOIN `user` on oder.u_id=`user`.id  JOIN  room on oder.room_id=room.id LIMIT #{offset},#{pageSize};
+        </select>
+        <!--搜索正在进行订单个数02-->
+        <select id="findTotalCount01" resultType="Integer">
+                select count(*) from oder where is_delete = 1
+        </select>
+        <!--user oder room三表联查 所有订单且为当前展示的订单-->
+        <select id="findList01" resultMap="oderMap">
+                select oder.id,oder.oder_code,room.room_num,room.type,user.username,oder.create_time,oder.room_start,oder.room_end,oder.number_of_people,oder.price,oder.status from oder JOIN `user` on oder.u_id=`user`.id  JOIN  room on oder.room_id=room.id LIMIT #{offset},#{pageSize};
+        </select>
+        <!--搜索删除订单个数03-->
+        <select id="findTotalCount01" resultType="Integer">
+                select count(*) from oder where is_delete = 1
+        </select>
+        <!--user oder room三表联查 所有订单且为当前展示的订单-->
+        <select id="findList01" resultMap="oderMap">
+                select oder.id,oder.oder_code,room.room_num,room.type,user.username,oder.create_time,oder.room_start,oder.room_end,oder.number_of_people,oder.price,oder.status from oder JOIN `user` on oder.u_id=`user`.id  JOIN  room on oder.room_id=room.id LIMIT #{offset},#{pageSize};
+        </select>
+        <!--搜索已取消订单个数04-->
+        <select id="findTotalCount01" resultType="Integer">
+                select count(*) from oder where is_delete = 1
+        </select>
+        <!--user oder room三表联查 所有订单且为当前展示的订单-->
+        <select id="findList01" resultMap="oderMap">
+                select oder.id,oder.oder_code,room.room_num,room.type,user.username,oder.create_time,oder.room_start,oder.room_end,oder.number_of_people,oder.price,oder.status from oder JOIN `user` on oder.u_id=`user`.id  JOIN  room on oder.room_id=room.id LIMIT #{offset},#{pageSize};
+        </select>
+        <!--搜索已完成订单个数05-->
+        <select id="findTotalCount01" resultType="Integer">
+                select count(*) from oder where is_delete = 1
+        </select>
+        <!--user oder room三表联查 所有订单且为当前展示的订单-->
+        <select id="findList01" resultMap="oderMap">
+                select oder.id,oder.oder_code,room.room_num,room.type,user.username,oder.create_time,oder.room_start,oder.room_end,oder.number_of_people,oder.price,oder.status from oder JOIN `user` on oder.u_id=`user`.id  JOIN  room on oder.room_id=room.id LIMIT #{offset},#{pageSize};
+        </select>
+</mapper>
