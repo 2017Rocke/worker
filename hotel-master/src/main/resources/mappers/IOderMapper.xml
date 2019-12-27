@@ -81,35 +81,35 @@
                 select oder.id,oder.oder_code,room.room_num,room.type,user.username,oder.create_time,oder.room_start,oder.room_end,oder.number_of_people,oder.price,oder.status from oder JOIN `user` on oder.u_id=`user`.id  JOIN  room on oder.room_id=room.id LIMIT #{offset},#{pageSize};
         </select>
         <!--搜索正在进行订单个数02-->
-        <select id="findTotalCount01" resultType="Integer">
-                select count(*) from oder where is_delete = 1
+        <select id="findTotalCount02" resultType="Integer">
+                select count(*) from oder where is_delete = 1 and room_end &gt; NOW();
         </select>
         <!--user oder room三表联查 所有订单且为当前展示的订单-->
-        <select id="findList01" resultMap="oderMap">
-                select oder.id,oder.oder_code,room.room_num,room.type,user.username,oder.create_time,oder.room_start,oder.room_end,oder.number_of_people,oder.price,oder.status from oder JOIN `user` on oder.u_id=`user`.id  JOIN  room on oder.room_id=room.id LIMIT #{offset},#{pageSize};
+        <select id="findList02" resultMap="oderMap">
+                (select oder.id,oder.oder_code,room.room_num,room.type,user.username,oder.create_time,oder.room_start,oder.room_end,oder.number_of_people,oder.price,oder.status from oder JOIN `user` on oder.u_id=`user`.id  JOIN  room on oder.room_id=room.id where oder.room_end &gt; NOW() and oder.is_delete=1) LIMIT #{offset},#{pageSize};
         </select>
         <!--搜索删除订单个数03-->
-        <select id="findTotalCount01" resultType="Integer">
-                select count(*) from oder where is_delete = 1
+        <select id="findTotalCount03" resultType="Integer">
+                select count(*) from oder where is_delete = 0
         </select>
         <!--user oder room三表联查 所有订单且为当前展示的订单-->
-        <select id="findList01" resultMap="oderMap">
-                select oder.id,oder.oder_code,room.room_num,room.type,user.username,oder.create_time,oder.room_start,oder.room_end,oder.number_of_people,oder.price,oder.status from oder JOIN `user` on oder.u_id=`user`.id  JOIN  room on oder.room_id=room.id LIMIT #{offset},#{pageSize};
+        <select id="findList03" resultMap="oderMap">
+                (select oder.id,oder.oder_code,room.room_num,room.type,user.username,oder.create_time,oder.room_start,oder.room_end,oder.number_of_people,oder.price,oder.status from oder JOIN `user` on oder.u_id=`user`.id  JOIN  room on oder.room_id=room.id where oder.is_delete=0 )LIMIT #{offset},#{pageSize};
         </select>
         <!--搜索已取消订单个数04-->
-        <select id="findTotalCount01" resultType="Integer">
-                select count(*) from oder where is_delete = 1
+        <select id="findTotalCount04" resultType="Integer">
+                select count(*) from oder where is_delete = 1 and status=0
         </select>
         <!--user oder room三表联查 所有订单且为当前展示的订单-->
-        <select id="findList01" resultMap="oderMap">
-                select oder.id,oder.oder_code,room.room_num,room.type,user.username,oder.create_time,oder.room_start,oder.room_end,oder.number_of_people,oder.price,oder.status from oder JOIN `user` on oder.u_id=`user`.id  JOIN  room on oder.room_id=room.id LIMIT #{offset},#{pageSize};
+        <select id="findList04" resultMap="oderMap">
+                (select oder.id,oder.oder_code,room.room_num,room.type,user.username,oder.create_time,oder.room_start,oder.room_end,oder.number_of_people,oder.price,oder.status from oder JOIN `user` on oder.u_id=`user`.id  JOIN  room on oder.room_id=room.id where oder.status=1 and oder.is_delete=1)LIMIT #{offset},#{pageSize};
         </select>
         <!--搜索已完成订单个数05-->
-        <select id="findTotalCount01" resultType="Integer">
-                select count(*) from oder where is_delete = 1
+        <select id="findTotalCount05" resultType="Integer">
+                select count(*) from oder where is_delete = 1 and NOW() &gt; room_end;
         </select>
         <!--user oder room三表联查 所有订单且为当前展示的订单-->
-        <select id="findList01" resultMap="oderMap">
-                select oder.id,oder.oder_code,room.room_num,room.type,user.username,oder.create_time,oder.room_start,oder.room_end,oder.number_of_people,oder.price,oder.status from oder JOIN `user` on oder.u_id=`user`.id  JOIN  room on oder.room_id=room.id LIMIT #{offset},#{pageSize};
+        <select id="findList05" resultMap="oderMap">
+                (select oder.id,oder.oder_code,room.room_num,room.type,user.username,oder.create_time,oder.room_start,oder.room_end,oder.number_of_people,oder.price,oder.status from oder JOIN `user` on oder.u_id=`user`.id  JOIN  room on oder.room_id=room.id where is_delete=1 and NOW() &gt; oder.room_end) LIMIT #{offset},#{pageSize};
         </select>
 </mapper>
