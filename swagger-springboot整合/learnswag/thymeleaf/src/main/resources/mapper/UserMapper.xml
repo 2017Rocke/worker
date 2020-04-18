@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qf.mapper.UserMapper">
+    <resultMap id="UserMap" type="com.qf.entity.User">
+        <result property="uid" column="u_id"/>
+        <result property="username" column="jpa_username"/>
+        <result property="password" column="jpa_password"/>
+        <result property="addr" column="addr"/>
+    </resultMap>
+    <sql id="b">
+        select * from jpa_user
+    </sql>
+    <select id="findAll" resultType="user" resultMap="UserMap">
+        <include refid="b" />
+    </select>
+</mapper>
