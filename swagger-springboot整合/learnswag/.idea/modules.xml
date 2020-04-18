@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/learnssm/learnssm.iml" filepath="$PROJECT_DIR$/learnssm/learnssm.iml" />
+      <module fileurl="file://$PROJECT_DIR$/learnswag.iml" filepath="$PROJECT_DIR$/learnswag.iml" />
+      <module fileurl="file://$PROJECT_DIR$/mybatis/mybatis.iml" filepath="$PROJECT_DIR$/mybatis/mybatis.iml" />
+      <module fileurl="file://$PROJECT_DIR$/thymeleaf/thymeleaf.iml" filepath="$PROJECT_DIR$/thymeleaf/thymeleaf.iml" />
+    </modules>
+  </component>
+</project>
